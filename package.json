@@ -1,0 +1,12 @@
+{
+  "name": "Simple Twitch Notifier",
+  "main": "index.html",
+  "window": {
+  	"width": 230,
+  	"height": 300,
+    "toolbar": false,
+    "resizable": false,
+  	"frame": false,
+  	"position": "center"
+  }
+}

@@ -1,0 +1,36 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="styles/style.css">
+	<script src="scripts/jquery-2.1.1.min.js"></script>
+	<script src="scripts/accounting.min.js"></script>
+	<script src="scripts/lib.js"></script>
+	<script src="scripts/script.js"></script>
+	<title>Simple Twitch Notifier</title>
+</head>
+<body>
+	<header>
+		<ul id="win_ul">
+			<li><a href="#" id="minimizeButton"></a></li>
+		</ul>
+		<div id="head">
+			<div id="twitch_img">
+				<img src="img/twitch.png">
+			</div>
+			<div id='user'>
+				<a id='user_link'></a>
+			</div>
+			<div id='user_menu'>
+				<a class='other_link'>ПОДКЛЮЧИТЬ ДРУГОЙ АККАУНТ</a>
+				<a class='other_link'>НАСТРОЙКИ</a>
+			</div>
+		</div>
+	</header>
+	<img id="loader" src="img/ajax-loader.gif" alt="Loading..."></img>
+	<div id="content">
+		<div id="follows">
+		</div>	
+	</div>
+	<div id='status' style='display: none;'></div>
+</body>
+</html>
