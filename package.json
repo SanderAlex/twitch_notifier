@@ -2,7 +2,7 @@
   "name": "Simple Twitch Notifier",
   "main": "index.html",
   "window": {
-  	"width": 230,
+  	"width": 290,
   	"height": 300,
     "toolbar": false,
     "resizable": false,

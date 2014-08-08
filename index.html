@@ -15,9 +15,11 @@
 	</header>
 	<div id='loginForm'>
 		<form action='main.html'>
-			<p>Login on twitch.tv</p>
-			<input name="login" value="vatnik322">
-			<p><input type="submit" value="Sign In"></p>
+			<p>Log In with your twitch account</p>
+			<br>
+			<div><span>Username</span><input name="login" value="vatnik322"></div>
+			<div><span>Password</span><input name="password" disabled></div>
+			<div><input type="submit" value="Log In" id="loginButton"></div>
 		</form>
 	</div>
 </body>
@@ -31,6 +33,7 @@
 
 	$(document).ready(function() {
 		$("#minimizeButton").click(minimizeProgram);
+		$("#closeButton").click(closeProgram);
 
 		if(window.location.search.split('=')[1] == 1) {
 			$("#loginForm").append("<p>User doesn't exist</p>");

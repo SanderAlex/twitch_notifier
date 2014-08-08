@@ -1,6 +1,5 @@
 function programInterface() {
   $("#minimizeButton").click(hideProgram);
-  $("#closeButton").click(closeProgram);
 
   tray_menu.append(new gui.MenuItem({ label: 'Show' }));
   tray_menu.append(new gui.MenuItem({ label: 'Exit' }));
@@ -17,9 +16,6 @@ function programInterface() {
 }
 
 function getUser() {
-  var limit = 100;
-  var offset = 0;
-
   function getFollows() {
     $.ajax({
       type: "POST",
@@ -39,12 +35,16 @@ function getUser() {
             getFollows();            
           }
           else
-            pageLoaded();
+            startObservation();
         }  
       },
       dataType: "jsonp"
     });
   }
+  var limit = 100;
+  var offset = 0;
+  clearInterval(followsInterval);
+  follows = [];
   getFollows();
 }
 
@@ -52,18 +52,23 @@ function pageLoaded() {
   win.width = win_width;
   win.height = win_height;
   win.setMinimumSize(win_width, win_height);
+  win.setResizable(true);
 
   $("#loader").remove();
   $("#content").css("visibility", "visible");
   $("#head").css("visibility", "visible");
+  $("#win_ul").append("<li><a href='#' id='maximizeButton'></a></li>");
 
   $("#user_link").html(user_name);
+
+  page_is_loaded = true;
+
+  addEvents();
 
   /*$("#user_link").click(function() {
     $("#user_menu").toggle();
   });*/
 
-  $.each(follows, followItem);
   nt = gui.Window.open(
   'notifications.html', {
       show_in_taskbar: false,
@@ -77,7 +82,16 @@ function pageLoaded() {
     }
   );
   nt.moveTo(screen.width - nt_width*1.1, -nt_height);
-  setInterval(function() {
+}
+
+function startObservation() {
+  if(!page_is_loaded)
+    pageLoaded();
+
+  $("#follows").empty();
+  $.each(follows, followItem);
+
+  followsInterval = setInterval(function() {
     $.each(follows, function(key, item) {
       isOnline(key, item['channel']['name'], false);
     });
@@ -87,19 +101,30 @@ function pageLoaded() {
   }, 3000);*/
 }
 
+function addEvents() {
+  $("#maximizeButton").click(maximizeProgram);
+  $("#refreshBt").click(getUser);
+  $("#twitch_img").click(function() {
+    gui.Shell.openExternal('http://www.twitch.tv/');
+  });
+  $("#user_link").click(function() {
+    gui.Shell.openExternal('http://www.twitch.tv/' + user_name + '/profile');
+  });
+}
+
 function minimizeProgram() {
   win.minimize();
 }
 
 function hideProgram() {
-    win.hide();
+  win.hide();
 }
 
 function maximizeProgram() {
   if(win.isMaximized)
-      win.unmaximize();
+    win.unmaximize();
   else
-      win.maximize();
+    win.maximize();
 }
 
 function closeProgram() {
