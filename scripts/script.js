@@ -1,6 +1,6 @@
 var gui = require('nw.gui');
 var win = gui.Window.get();
-var tray = new gui.Tray({ icon: 'img/twitch.png' });
+var tray = new gui.Tray({ icon: 'img/twitch1.png' });
 var tray_menu = new gui.Menu();
 
 var page_is_loaded = false;
@@ -14,6 +14,7 @@ var nt_height = 100;
 
 var user_name = window.location.search.split('=')[1];
 var follows = [];
+var online = {};
 
 var limit = 100;
 var offset = 0;

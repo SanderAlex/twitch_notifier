@@ -162,13 +162,11 @@ function isOnline(key, channel, first_check) {
         $("#" + key + " div:last-child").html("offline");
       }
       else {
-        if(first_check)
-          $("#" + key + " div:last-child").addClass("statusOnline");
-        if($("#" + key + " div:last-child").hasClass("statusOffline") && first_check == false) {
+        if($("#" + key + " div:last-child").hasClass("statusOffline") && !first_check) {
           $("#" + key + " div:last-child").removeClass("statusOffline"); 
-          $("#" + key + " div:last-child").addClass("statusOnline");
           notification(response, "just went live!");
         }
+        $("#" + key + " div:last-child").addClass("statusOnline");
         $("#" + key + " div:last-child").html("<img src='img/viewer.png'><span>" + accounting.formatNumber(response['stream']['viewers']) + "</span>Live");
       }
     },

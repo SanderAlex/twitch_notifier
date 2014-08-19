@@ -76,9 +76,8 @@ ul#win_ul li a:hover {
 #loginForm input {
 	outline: none !important;
 	float: right;
-	background-color: #FAFFBD;
 	padding: 5px;
-	border: 1px solid #BBBF8D;
+	border: 1px solid #BFBFBF;
 }
 #loginForm input:focus {
 	outline: none !important;
