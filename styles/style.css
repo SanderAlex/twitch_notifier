@@ -53,7 +53,7 @@ ul#win_ul li a {
 	height: 20px;
 }
 ul#win_ul li a:hover {
-	cursor: default;
+	cursor: pointer;
 	background-size: auto;
 }
 

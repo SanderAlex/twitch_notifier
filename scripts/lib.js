@@ -1,15 +1,20 @@
 function programInterface() {
   $("#minimizeButton").click(hideProgram);
 
-  tray_menu.append(new gui.MenuItem({ label: 'Show' }));
+  tray_menu.append(new gui.MenuItem({ label: 'Show Notifications', type: 'checkbox', checked: 'true' }));
+  tray_menu.append(new gui.MenuItem({ type: 'separator' }));
   tray_menu.append(new gui.MenuItem({ label: 'Exit' }));
   tray_menu.items[0].click = function() { 
-    win.show();
+    if(tray_menu.items[0].checked)
+      tray.icon = 'img/twitch_on.png';
+    else
+      tray.icon = 'img/twitch_off.png';
   };
-  tray_menu.items[1].click = closeProgram;
+  tray_menu.items[2].click = closeProgram;
 
   tray.on('click', function() {
     win.show();
+    win.focus();
   });
 
   tray.menu = tray_menu;
@@ -93,12 +98,18 @@ function startObservation() {
 
   followsInterval = setInterval(function() {
     $.each(follows, function(key, item) {
-      isOnline(key, item['channel']['name'], false);
+      isOnline(key, item['channel']['name']);
     });
   }, 60000);
-  /*setInterval(function() {
-    notification('http://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_150x150.png', "dasdas", "just went live!");
-  }, 3000);*/
+  /*
+  setInterval(function() {
+    testNotification(0);
+  }, 3000);
+
+  setInterval(function() {
+    testNotification(1);
+  }, 10000);
+  */
 }
 
 function addEvents() {
@@ -147,10 +158,10 @@ function followItem(key, item) {
   follow += "</div>";
   $("#follows").append(follow);
 
-  isOnline(key, item['channel']['name'], true);
+  isOnline(key, item['channel']['name']);
 }
 
-function isOnline(key, channel, first_check) {
+function isOnline(key, channel) {
   var logo;
   $.ajax({
     type: "POST",
@@ -162,9 +173,10 @@ function isOnline(key, channel, first_check) {
         $("#" + key + " div:last-child").html("offline");
       }
       else {
-        if($("#" + key + " div:last-child").hasClass("statusOffline") && !first_check) {
-          $("#" + key + " div:last-child").removeClass("statusOffline"); 
-          notification(response, "just went live!");
+        if($("#" + key + " div:last-child").hasClass("statusOffline")) {
+          $("#" + key + " div:last-child").removeClass("statusOffline");
+          if(tray_menu.items[0].checked) 
+            notification(response, "just went live!");
         }
         $("#" + key + " div:last-child").addClass("statusOnline");
         $("#" + key + " div:last-child").html("<img src='img/viewer.png'><span>" + accounting.formatNumber(response['stream']['viewers']) + "</span>Live");
@@ -178,7 +190,7 @@ function notification(stream_obj, text) {
 
   function toggleNot(){
     setTimeout(function(){
-      if(y <= 0 ){
+      if(y <= 0){
         nt.moveTo(x, y);
         y += 10;
         toggleNot();
@@ -196,13 +208,13 @@ function notification(stream_obj, text) {
     }, 30);
   }
 
-  if($(process.mainModule.exports.notification).children($("#" + stream_obj['stream']['channel']['name'])).length == 1)
+  if($(process.mainModule.exports.notification).children("#" + stream_obj['stream']['channel']['_id']).length == 1)
     return;
 
   var x = screen.width - nt_width*1.1;
   var y = -nt_height;
   var h = nt.height;
-  var not = "<div class='notification' id='" + stream_obj['stream']['channel']['name'] + "'>";
+  var not = "<div class='notification' id='" + stream_obj['stream']['channel']['_id'] + "'>";
 
   if(!nt.isShow)
     nt.show(true);
@@ -215,6 +227,52 @@ function notification(stream_obj, text) {
   not += "<a>" + stream_obj['stream']['channel']['display_name'] + "</a>";
   not += "<p>" + text + "</p>";
   not += "</div></div>";
+
+  $(process.mainModule.exports.notification).prepend(not);
+
+  if($(process.mainModule.exports.notification).children().length == 1)
+    toggleNot();
+  else
+    resizeNot($(process.mainModule.exports.notification).children().length);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+
+function testNotification(test) {
+
+  function toggleNot(){
+    setTimeout(function(){
+      if(y <= 0){
+        nt.moveTo(x, y);
+        y += 10;
+        toggleNot();
+      }
+    }, 30);
+  }
+
+  function resizeNot(count){
+    setTimeout(function(){
+      if(h <= nt_height*count && $(process.mainModule.exports.notification).children().length != 0){
+        nt.height = h;
+        h += 10;
+        resizeNot(count);
+      }
+    }, 30);
+  }
+
+  if($(process.mainModule.exports.notification).children("#" + test).length == 1)
+    return;
+
+  var x = screen.width - nt_width*1.1;
+  var y = -nt_height;
+  var h = nt.height;
+  var not = "<div class='notification' id='" + test + "'>" + test + "</div>";
+
+  if(!nt.isShow)
+    nt.show(true);
 
   $(process.mainModule.exports.notification).prepend(not);
 
